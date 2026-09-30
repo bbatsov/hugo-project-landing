@@ -1,0 +1,6 @@
+# Module configuration for sites importing this theme.
+[module]
+  [module.hugoVersion]
+    # hugo.Data, site.Language.Locale and the layouts/_partials directory
+    # all need a recent Hugo.
+    min = "0.158.0"

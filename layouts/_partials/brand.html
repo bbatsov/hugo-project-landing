@@ -1,0 +1,18 @@
+{{- /* The site's logo in the nav. params.logo is an SVG under assets/; with
+       logoStyle = "wordmark" it stands on its own, otherwise it's shown as a
+       mark next to the project name. The SVG should draw in currentColor so
+       it follows the theme. */ -}}
+{{- $wordmark := eq site.Params.logoStyle "wordmark" }}
+<a class="brand{{ if $wordmark }} wordmark{{ end }}" href="{{ "/" | relURL }}">
+  {{- with site.Params.logo }}
+    {{- $svg := (resources.Get .).Content | safeHTML }}
+    {{- if $wordmark }}
+  {{ $svg }}
+    {{- else }}
+  <span class="brand-mark">{{ $svg }}</span>
+  <span>{{ site.Params.name }}</span>
+    {{- end }}
+  {{- else }}
+  <span>{{ site.Params.name }}</span>
+  {{- end }}
+</a>
