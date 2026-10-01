@@ -63,6 +63,19 @@ cider.mx shows a REPL, a Magit log and `*Help*`; projectile.mx a dired buffer.
 counterpart; `--accent` is the brand color and `--region` is used for the
 cursor and highlights.
 
+**Other pages** (related projects, a colophon, ...): any markdown file in
+`content/` with a `title` and a `description` gets a plain one-column page in
+the same frame. Link them from the header line and the footer with menus:
+
+```toml
+[[menus.main]]
+  name = "related"
+  pageRef = "/related"
+[[menus.footer]]
+  name = "Colophon"
+  pageRef = "/colophon"
+```
+
 ## Working on the theme
 
 Point a site at a local checkout instead of the published version:

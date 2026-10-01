@@ -1,0 +1,45 @@
+{{ define "main" }}
+{{- /* A plain page (related projects, a colophon, ...): one column of
+       markdown in the same frame as the landing page, without the second
+       window or M-x. */ -}}
+<header class="mode-line header-line">
+  <nav class="crumbs" aria-label="You are here">
+    <a href="{{ "/" | relURL }}" class="buffer">{{ partial "buffer-name.html" . }}</a><span class="crumb-trail"> &#8250; {{ .Title }}</span>
+  </nav>
+  <span class="spacer"></span>
+  {{- range site.Menus.main }}
+  <a href="{{ .URL | relURL }}">{{ .Name }}</a>
+  {{- end }}
+  <a href="{{ site.Params.docs }}">manual</a>
+  <a href="{{ site.Params.github }}">github</a>
+  <button type="button" class="load-theme" aria-label="Switch between light and dark theme">M-x load-theme</button>
+</header>
+
+<main class="buffer-text page">
+  <p class="comment">;; {{ .Description }}</p>
+  <h1>{{ .Title }}</h1>
+  {{ .Content }}
+  <p class="colophon"><a href="{{ "/" | relURL }}">Back to {{ site.Params.name }}</a></p>
+</main>
+
+<footer class="minibuffer-area">
+  <div class="mode-line bottom">
+    <span>-:%%-</span>
+    <span class="buffer">{{ .File.ContentBaseName }}.org</span>
+    <span>All</span>
+    <span>(Org)</span>
+  </div>
+  <div class="echo-area">{{ site.Params.echo | default (printf "Welcome to %s" site.Params.name) }}</div>
+</footer>
+
+<script>
+  document.querySelector(".load-theme").addEventListener("click", function () {
+    var root = document.documentElement;
+    var dark = root.dataset.theme
+      ? root.dataset.theme === "dark"
+      : matchMedia("(prefers-color-scheme: dark)").matches;
+    root.dataset.theme = dark ? "light" : "dark";
+    try { localStorage.setItem("theme", root.dataset.theme); } catch (e) {}
+  });
+</script>
+{{ end }}

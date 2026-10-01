@@ -10,6 +10,9 @@
     <a href="#top" class="buffer">{{ partial "buffer-name.html" . }}</a><span class="crumb-trail" data-crumbs></span>
   </nav>
   <span class="spacer"></span>
+  {{- range site.Menus.main }}
+  <a href="{{ .URL | relURL }}" data-echo="{{ .Title | default .Name }}">{{ .Name }}</a>
+  {{- end }}
   <a href="{{ $p.docs }}" data-cmd="manual" data-echo="Read the {{ $name }} manual">manual</a>
   <a href="#news" data-echo="Jump to the news">news</a>
   <a href="{{ $p.github }}" data-cmd="github" data-echo="Visit {{ $name }} on GitHub">github{{ with $gh.stars }} {{ if ge . 1000 }}{{ printf "%.1fk" (div (float .) 1000) }}{{ else }}{{ . }}{{ end }}&#9733;{{ end }}</a>
@@ -124,6 +127,7 @@
 
       {{ with .Params.outro }}<p class="signoff">{{ . }}</p>{{ end }}
       <p class="colophon">&copy; {{ replace $p.copyright "{year}" (string now.Year) }}
+        {{- range site.Menus.footer }} <a href="{{ .URL | relURL }}">{{ .Name }}</a>.{{ end }}
         <a href="{{ $p.sourceRepo }}">Source</a>.</p>
     </div>
   </main>

@@ -346,3 +346,12 @@ dl.faq dd { margin: 0.25rem 0 0; }
   clip-path: inset(50%);
   white-space: nowrap;
 }
+
+/* Plain pages: the title as a level-1 Org heading. */
+.page h1 { margin-top: 0.5rem; font-size: 2em; }
+.page h1::before { content: "* "; color: var(--fg-dim); font-weight: 400; }
+.page h2::before { content: "** "; }
+.page h3::before { content: "*** "; }
+.page ul { padding-left: 1.5rem; }
+.page li { margin-bottom: 0.45rem; }
+.page li::marker { content: "- "; color: var(--fg-dim); font-family: var(--mono); }
