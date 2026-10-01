@@ -1,195 +1,188 @@
 {{ define "main" }}
-{{- $release := hugo.Data.release }}
+<script>document.documentElement.classList.add("js")</script>
 {{- $gh := partialCached "github.html" . }}
-<header class="nav">
-  <div class="wrap nav-inner">
-    {{ partial "brand.html" . }}
-    <nav>
-      <a href="#features">Features</a>
-      <a href="#release">{{ site.Params.name }} {{ $release.series }}</a>
-      <a href="#faq">FAQ</a>
-      <a href="{{ site.Params.docs }}">Docs</a>
-      <a class="gh" href="{{ site.Params.github }}">GitHub
-        {{- with $gh.stars }} <span class="stars">&#9733; {{ if ge . 1000 }}{{ printf "%.1fk" (div (float .) 1000) }}{{ else }}{{ . }}{{ end }}</span>{{ end }}</a>
-      <button class="theme-toggle" type="button" aria-label="Switch between light and dark mode">
-        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
-        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
-      </button>
-    </nav>
-  </div>
+{{- $p := site.Params }}
+{{- $name := $p.name }}
+{{- $release := hugo.Data.release }}
+{{- $community := hugo.Data.community }}
+<header class="mode-line header-line">
+  <nav class="crumbs" aria-label="Current section">
+    <a href="#top" class="buffer">{{ partial "buffer-name.html" . }}</a><span class="crumb-trail" data-crumbs></span>
+  </nav>
+  <span class="spacer"></span>
+  <a href="{{ $p.docs }}" data-cmd="manual" data-echo="Read the {{ $name }} manual">manual</a>
+  <a href="#news" data-echo="Jump to the news">news</a>
+  <a href="{{ $p.github }}" data-cmd="github" data-echo="Visit {{ $name }} on GitHub">github{{ with $gh.stars }} {{ if ge . 1000 }}{{ printf "%.1fk" (div (float .) 1000) }}{{ else }}{{ . }}{{ end }}&#9733;{{ end }}</a>
+  <button type="button" class="load-theme" aria-label="Switch between light and dark theme" data-echo="Switch between modus-operandi and modus-vivendi">M-x load-theme</button>
 </header>
 
-<main>
-  <section class="hero">
-    <div class="wrap hero-grid">
-      <div class="hero-text">
-        <a class="pill" href="#release"><strong>New</strong> {{ $release.title }} &rarr;</a>
-        <h1>{{ .Params.tagline }}</h1>
-        <p class="lead">{{ .Params.lead }}</p>
-        <div class="actions">
-          <a class="button primary" href="#get-started">Get started</a>
-          <a class="button" href="{{ site.Params.docs }}">Read the manual</a>
+<div class="frame" id="top">
+  <main class="window text-window">
+    <div class="buffer-text">
+      <section class="opening" data-pane="hero">
+        {{ partial "title.html" . }}
+        <p class="comment">;; {{ .Params.tagline }}</p>
+        <p class="intro">{{ .Params.intro }}</p>
+        <div class="minibuffer" data-copy="{{ .Params.install }}">
+          <span class="prompt">M-x</span>
+          <span>{{ strings.TrimPrefix "M-x " .Params.install }}</span><span class="cursor">&nbsp;</span>
+          <button type="button" data-echo="Copy the install command">copy</button>
         </div>
-        <div class="install" data-copy="{{ .Params.install }}">
-          <code>{{ .Params.install }}</code>
-          <button type="button" aria-label="Copy the install command">Copy</button>
-        </div>
-        <p class="version">Latest release <a href="{{ $gh.releaseURL }}">{{ $gh.version }}</a></p>
-      </div>
-      <figure class="hero-media shot">
-        {{ partial "media.html" (dict "src" .Params.heroMedia "alt" .Params.heroAlt) }}
-      </figure>
-    </div>
-  </section>
+        <p class="version">Latest release: <a href="{{ $gh.releaseURL }}">{{ $gh.version }}</a>
+          {{- with $release }}, and the <a href="{{ .announcement }}">story behind {{ .series }}</a>{{ end }}.</p>
+      </section>
 
-  <section class="pillars">
-    <div class="wrap pillar-grid">
-      {{- range $i, $p := .Params.pillars }}
-      <div class="pillar">
-        <span class="pillar-icon" aria-hidden="true">{{ $p.icon | default (index (slice "&#955;" "&#9737;" "&#8734;") $i) | safeHTML }}</span>
-        <h2>{{ $p.title }}</h2>
-        <p>{{ $p.blurb }}</p>
-      </div>
-      {{- end }}
-    </div>
-  </section>
-
-  <section id="features" class="showcase">
-    <div class="wrap">
-      <p class="eyebrow">Features</p>
-      <h2 class="section-title">{{ .Params.featuresTitle }}</h2>
-      {{- range $i, $f := hugo.Data.showcase }}
-      <article class="feature{{ if modBool $i 2 }}{{ else }} flip{{ end }}">
-        <div class="feature-text">
-          <h3>{{ $f.title }}</h3>
-          <p class="keys"><kbd>{{ $f.keys }}</kbd></p>
-          <p>{{ $f.blurb }}</p>
-          <a class="more-link" href="{{ $f.docs }}">Learn more &rarr;</a>
-        </div>
-        {{- if os.FileExists (printf "static/%s" $f.media) }}
-        <figure class="shot">{{ partial "media.html" (dict "src" $f.media "alt" $f.alt) }}</figure>
+      <details class="org" id="features" open>
+        <summary><h2>{{ .Params.featuresTitle | default "What it's like" }}</h2></summary>
+        {{- range $i, $f := hugo.Data.showcase }}
+        <section class="feature" data-pane="feature-{{ $i }}">
+          <h3 id="feature-{{ $i }}">{{ $f.title }} <span class="heading-keys"><kbd>{{ $f.keys }}</kbd></span></h3>
+          <p>{{ $f.blurb | safeHTML }} <a class="more-link" href="{{ $f.docs }}">[manual]</a></p>
+          {{- if os.FileExists (printf "static/%s" $f.media) }}
+          <figure class="inline">
+            {{ partial "media.html" (dict "src" $f.media "alt" $f.alt) }}
+            {{- with $f.caption }}<figcaption>{{ . }}</figcaption>{{ end }}
+          </figure>
+          {{- end }}
+        </section>
         {{- end }}
-      </article>
-      {{- end }}
 
-      <div class="also">
-        <h3>&hellip;and a lot more</h3>
-        <ul class="chips">
-          {{- range hugo.Data.features }}
-          <li><a href="{{ .docs }}">{{ .name }}</a></li>
+        {{- with hugo.Data.features }}
+        <section data-pane="rest">
+          <h3 id="the-rest">{{ $.Params.restTitle | default "And the rest" }}</h3>
+          {{ with $.Params.restIntro }}<p>{{ . }}</p>{{ end }}
+          <ul class="plain columns">
+            {{- range . }}
+            <li><a href="{{ .docs }}">{{ .name }}</a></li>
+            {{- end }}
+          </ul>
+        </section>
+        {{- end }}
+      </details>
+
+      <details class="org" id="news" open data-pane="news">
+        <summary><h2>{{ .Params.newsTitle | default "News" }}</h2></summary>
+        <ul class="news">
+          <li><time>latest</time><a href="{{ $gh.releaseURL }}">{{ $name }} {{ $gh.version }} is the current release</a></li>
+          {{- range partialCached "news.html" . }}
+          <li><time datetime="{{ .date.Format "2006-01-02" }}">{{ .date.Format "2006-01-02" }}</time><a href="{{ .url }}">{{ .title }}</a></li>
           {{- end }}
         </ul>
-      </div>
-    </div>
-  </section>
+      </details>
 
-  <section id="release" class="release">
-    <div class="wrap">
-      <p class="eyebrow">What's new</p>
-      <h2 class="section-title">{{ $release.title }}</h2>
-      <p class="release-summary">{{ $release.summary }}</p>
-      <div class="highlight-grid">
-        {{- range $release.highlights }}
-        <article class="highlight">
-          <figure class="shot{{ with .focus }} focus-{{ . }}{{ end }}">{{ partial "media.html" (dict "src" .media "alt" .title) }}</figure>
-          <h3><a href="{{ .docs }}">{{ .title }}</a></h3>
-          <p>{{ .blurb | safeHTML }}</p>
-        </article>
-        {{- end }}
-      </div>
-      <p class="release-links actions">
-        <a class="button primary" href="{{ $release.announcement }}">Read the announcement</a>
-        <a class="button ghost" href="{{ $release.changelog }}">Full changelog</a>
-      </p>
-    </div>
-  </section>
-
-  <section id="get-started" class="start">
-    <div class="wrap">
-      <p class="eyebrow">Get started</p>
-      <h2 class="section-title">{{ .Params.startTitle | default "Up and running in a minute" }}</h2>
-      <ol class="steps">
-        {{- range .Params.steps }}
-        <li>
-          <h3>{{ .title }}</h3>
-          <p>{{ .body | safeHTML }}</p>
-        </li>
-        {{- end }}
-      </ol>
-      <div class="start-note">{{ .Content }}</div>
-    </div>
-  </section>
-
-  <section id="faq" class="faq">
-    <div class="wrap narrow">
-      <p class="eyebrow">FAQ</p>
-      <h2 class="section-title">{{ .Params.faqTitle | default "Questions people ask" }}</h2>
-      {{- range hugo.Data.faq }}
-      <details>
-        <summary>{{ .q }}</summary>
-        <p>{{ .a | safeHTML }}</p>
+      {{- with .Content }}
+      <details class="org" id="history" data-pane="history">
+        <summary><h2>{{ $.Params.historyTitle | default "Where it came from" }}</h2></summary>
+        {{ . }}
       </details>
       {{- end }}
-    </div>
-  </section>
 
-  <section id="community" class="community">
-    <div class="wrap">
-      <div class="columns">
-        <div>
-          <h2>Get help</h2>
-          <ul class="links">
-            {{- range hugo.Data.community.help }}
-            <li><a href="{{ .url }}">{{ .name }}</a> <span>{{ .blurb }}</span></li>
-            {{- end }}
-          </ul>
-        </div>
-        <div>
-          <h2>Around {{ site.Params.name }}</h2>
-          <ul class="links">
-            {{- range hugo.Data.community.ecosystem }}
-            <li><a href="{{ .url }}">{{ .name }}</a> <span>{{ .blurb }}</span></li>
-            {{- end }}
-          </ul>
-        </div>
-      </div>
-      <div class="support">
-        <h2>Support {{ site.Params.name }}</h2>
-        <p>{{ hugo.Data.community.supportBlurb }}</p>
-        <div class="actions">
-          {{- range hugo.Data.community.support }}
-          <a class="button" href="{{ .url }}">{{ .name }}</a>
+      <details class="org" id="get-started" open data-pane="start">
+        <summary><h2>{{ .Params.startTitle | default "Getting started" }}</h2></summary>
+        <ol class="plain">
+          {{- range .Params.steps }}
+          <li>{{ . | safeHTML }}</li>
           {{- end }}
-        </div>
-      </div>
-    </div>
-  </section>
-</main>
+        </ol>
+        {{ with .Params.stepsNote }}<p>{{ . | markdownify }}</p>{{ end }}
+      </details>
 
-<footer>
-  <div class="wrap">
-    <p>&copy; {{ replace site.Params.copyright "{year}" (string now.Year) }}
-      Source on <a href="{{ site.Params.sourceRepo }}">GitHub</a>.</p>
+      {{- with hugo.Data.faq }}
+      <details class="org" id="faq" data-pane="faq">
+        <summary><h2>{{ $.Params.faqTitle | default "Questions" }}</h2></summary>
+        <dl class="faq">
+          {{- range . }}
+          <dt>{{ .q }}</dt>
+          <dd>{{ .a | safeHTML }}</dd>
+          {{- end }}
+        </dl>
+      </details>
+      {{- end }}
+
+      <details class="org" id="community" open data-pane="community">
+        <summary><h2>{{ .Params.communityTitle | default "Help and support" }}</h2></summary>
+        <h3 id="help">Getting help</h3>
+        <ul class="plain">
+          {{- range $community.help }}
+          <li><a href="{{ .url }}">{{ .name }}</a> - {{ .blurb }}</li>
+          {{- end }}
+        </ul>
+
+        <h3 id="funding">Supporting {{ $name }}</h3>
+        <p>{{ $community.supportBlurb }}</p>
+        <ul class="plain funding">
+          {{- range $community.support }}
+          <li><a href="{{ .url }}">{{ .name }}</a>{{ if .recommended }} <span class="tag">recommended</span>{{ end }} - {{ .blurb }}</li>
+          {{- end }}
+        </ul>
+        {{- with $community.ecosystem }}
+        <p>{{ $community.ecosystemIntro | default "Related projects:" }}
+          {{ range $i, $e := . }}{{ if $i }}, {{ end }}<a href="{{ $e.url }}">{{ $e.name }}</a>{{ end }}.</p>
+        {{- end }}
+      </details>
+
+      {{ with .Params.outro }}<p class="signoff">{{ . }}</p>{{ end }}
+      <p class="colophon">&copy; {{ replace $p.copyright "{year}" (string now.Year) }}
+        <a href="{{ $p.sourceRepo }}">Source</a>.</p>
+    </div>
+  </main>
+
+  {{- /* The other window: on wide screens it shows something for whatever
+         section is being read - a feature's screencast, or for the other
+         sections the site's partial panes/<section>.html (see README).
+         Without JavaScript it stays hidden and the media shows inline. */}}
+  <aside class="window media-window" aria-label="The other window: screencasts and examples for the section you're reading">
+    <div class="pane" data-pane-id="hero">
+      {{ partial "media.html" (dict "src" .Params.heroMedia "alt" .Params.heroAlt) }}
+      <p class="pane-caption">{{ .Params.heroAlt }}</p>
+    </div>
+    {{- range $i, $f := hugo.Data.showcase }}
+    {{- if os.FileExists (printf "static/%s" $f.media) }}
+    <div class="pane" data-pane-id="feature-{{ $i }}">
+      {{ partial "media.html" (dict "src" $f.media "alt" $f.alt) }}
+      <p class="pane-caption">{{ $f.caption }}</p>
+    </div>
+    {{- end }}
+    {{- end }}
+    {{- range slice "rest" "news" "history" "start" "faq" "community" }}
+    {{- $partial := printf "panes/%s.html" . }}
+    {{- if templates.Exists (printf "_partials/%s" $partial) }}
+    <div class="pane" data-pane-id="{{ . }}">
+      {{ partial $partial $ }}
+    </div>
+    {{- end }}
+    {{- end }}
+  </aside>
+</div>
+
+<footer class="minibuffer-area">
+  <div class="mode-line bottom">
+    <span>-:---</span>
+    <span class="buffer">{{ partial "buffer-name.html" . }}</span>
+    <span class="position" data-position>Top</span>
+    <span>({{ $p.modeName | default $name }} {{ $gh.version }})</span>
+    <span class="spacer"></span>
+    <span class="hint"><kbd>?</kbd> keys <kbd>M-x</kbd> commands</span>
+  </div>
+  <div class="echo-area" data-echo-area>{{ $p.echo | default (printf "Welcome to %s" $name) }}</div>
+  <div class="sr-only" data-announce aria-live="polite"></div>
+  <div class="completions" data-completions hidden>
+    <ul role="listbox" id="mx-candidates" aria-label="Commands" data-candidates></ul>
+    <label class="mx-prompt"><span>M-x</span> <input type="text" data-mx-input autocomplete="off" spellcheck="false" aria-label="Command" role="combobox" aria-controls="mx-candidates" aria-expanded="false" aria-autocomplete="list"></label>
+  </div>
+  <div class="which-key" data-which-key hidden>
+    <dl>
+      <dt><kbd>M-x</kbd> <kbd>:</kbd></dt><dd>run a command</dd>
+      <dt><kbd>n</kbd></dt><dd>next heading</dd>
+      <dt><kbd>p</kbd></dt><dd>previous heading</dd>
+      <dt><kbd>RET</kbd> on a heading</dt><dd>fold or unfold it</dd>
+      <dt><kbd>t</kbd></dt><dd>load-theme</dd>
+      <dt><kbd>?</kbd></dt><dd>this help</dd>
+      <dt><kbd>q</kbd> <kbd>C-g</kbd></dt><dd>quit</dd>
+    </dl>
   </div>
 </footer>
 
-<script>
-  document.querySelector(".theme-toggle").addEventListener("click", function () {
-    var root = document.documentElement;
-    var dark = root.dataset.theme
-      ? root.dataset.theme === "dark"
-      : matchMedia("(prefers-color-scheme: dark)").matches;
-    root.dataset.theme = dark ? "light" : "dark";
-    try { localStorage.setItem("theme", root.dataset.theme); } catch (e) {}
-  });
-
-  document.querySelectorAll(".install button").forEach(function (b) {
-    b.addEventListener("click", function () {
-      navigator.clipboard.writeText(b.parentElement.dataset.copy).then(function () {
-        b.textContent = "Copied";
-        setTimeout(function () { b.textContent = "Copy"; }, 1500);
-      });
-    });
-  });
-</script>
+{{- $js := resources.Get "js/emacs.js" | minify | fingerprint }}
+<script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>
 {{ end }}

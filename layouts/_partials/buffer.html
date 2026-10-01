@@ -1,0 +1,13 @@
+{{- /* A text buffer for the other window, for use in a site's panes/*.html
+       partials:
+
+         {{ partial "buffer.html" (dict "name" "*scratch*" "mode" "Lisp Interaction"
+              "state" "-:---" "position" "All" "body" $html) }}
+
+       The body is preformatted HTML; the theme colors spans with the classes
+       comment, prompt, date, who, heading, key, command, keyword, function,
+       string, dir, file, marker and cursor. */ -}}
+<div class="buffer-pane">
+<pre class="buffer-body">{{ .body | safeHTML }}</pre>
+<div class="pane-mode-line"><span>{{ .state | default "-:---" }}</span> <b>{{ .name }}</b> <span>{{ .position | default "All" }}</span> <span>({{ .mode }})</span></div>
+</div>

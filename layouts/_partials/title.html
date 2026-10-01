@@ -1,0 +1,15 @@
+{{- /* The page's h1: params.logo, an SVG under assets/ drawn in
+       currentColor. With logoStyle = "wordmark" the logo is the title on its
+       own (give the SVG an aria-label); otherwise it's a mark next to the
+       project's name. */ -}}
+{{- $p := site.Params }}
+{{- with $p.logo }}
+  {{- $svg := (resources.Get .).Content | safeHTML }}
+  {{- if eq $p.logoStyle "wordmark" }}
+<h1 class="logo">{{ $svg }}</h1>
+  {{- else }}
+<h1 class="title"><span class="title-mark" aria-hidden="true">{{ $svg }}</span>{{ $p.name }}</h1>
+  {{- end }}
+{{- else }}
+<h1 class="title">{{ $p.name }}</h1>
+{{- end }}

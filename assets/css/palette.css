@@ -1,42 +1,42 @@
-/* A neutral default palette. Sites override this file with their own
-   assets/css/palette.css: every token needs a light value and a --dark-
-   counterpart, which main.css swaps in for the dark theme. */
+/* The default colors: Emacs's Modus themes, modus-operandi for light and
+   modus-vivendi for dark. A site overrides this file to bring in its own
+   accent; --accent is its brand color (for marks and highlights) and
+   --region/--region-fg are what Emacs would use for the region and the
+   cursor. Every token has a --dark- counterpart that main.css swaps in. */
 :root {
-  --bg: #fbfbfc;
-  --bg-alt: #f2f3f5;
-  --fg: #18191c;
-  --muted: #595b62;
-  --faint: #878992;
-  --accent: #3b5bdb;
-  --accent-strong: #3b5bdb;
-  --accent-ink: #ffffff;
-  --link: #3b5bdb;
-  --border: #e2e3e8;
-  --card: #ffffff;
-  --grid: rgb(24 25 28 / 0.045);
-  --glow: rgb(59 91 219 / 0.14);
-  --glow-soft: rgb(59 91 219 / 0.08);
+  --bg: #ffffff;
+  --bg-dim: #f2f2f2;
+  --fg: #000000;
+  --fg-dim: #595959;
+  --border: #9f9f9f;
+  --blue: #0031a9;
+  --magenta: #721045;
+  --green: #006800;
+  --cyan: #005e8b;
+  --link: #3548cf;
+  --accent: #3548cf;
+  --mode-line-bg: #c8c8c8;
+  --mode-line-fg: #000000;
+  --mode-line-border: #5a5a5a;
+  --region: #bdbdbd;
+  --region-fg: #000000;
+  --key-bg: #f2f2f2;
 
-  /* the release band is dark in both themes */
-  --band-bg: #15161a;
-  --band-fg: #ebebee;
-  --band-muted: #a4a6ad;
-  --band-card: #1e1f25;
-  --band-border: #2d2e36;
-
-  --dark-bg: #101114;
-  --dark-bg-alt: #16171b;
-  --dark-fg: #ebebee;
-  --dark-muted: #a4a6ad;
-  --dark-faint: #7a7c84;
-  --dark-accent: #4c6ef5;
-  --dark-accent-strong: #91a7ff;
-  --dark-link: #91a7ff;
-  --dark-border: #292a31;
-  --dark-card: #18191e;
-  --dark-grid: rgb(255 255 255 / 0.035);
-  --dark-glow: rgb(76 110 245 / 0.2);
-  --dark-glow-soft: rgb(76 110 245 / 0.12);
-  --dark-band-bg: #0b0b0e;
-  --dark-band-card: #16171b;
+  --dark-bg: #000000;
+  --dark-bg-dim: #1e1e1e;
+  --dark-fg: #ffffff;
+  --dark-fg-dim: #989898;
+  --dark-border: #646464;
+  --dark-blue: #2fafff;
+  --dark-magenta: #feacd0;
+  --dark-green: #44bc44;
+  --dark-cyan: #00d3d0;
+  --dark-link: #79a8ff;
+  --dark-accent: #79a8ff;
+  --dark-mode-line-bg: #505050;
+  --dark-mode-line-fg: #ffffff;
+  --dark-mode-line-border: #959595;
+  --dark-region: #5a5a5a;
+  --dark-region-fg: #ffffff;
+  --dark-key-bg: #1e1e1e;
 }

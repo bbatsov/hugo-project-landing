@@ -1,0 +1,2 @@
+{{- /* What the mode lines call this page: params.buffer, or the site's host. */ -}}
+{{- site.Params.buffer | default (urls.Parse site.BaseURL).Host -}}

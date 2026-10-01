@@ -1,0 +1,5 @@
+{{- /* A screenshot or GIF for the other window, for use in a site's
+       panes/*.html partials: (partial "pane-media.html" (dict "src" "media/x.webp"
+       "alt" "..." "caption" "...")). */ -}}
+{{ partial "media.html" (dict "src" .src "alt" .alt) }}
+{{- with .caption }}<p class="pane-caption">{{ . }}</p>{{ end }}
