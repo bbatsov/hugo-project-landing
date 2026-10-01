@@ -70,12 +70,6 @@
         </ul>
       </details>
 
-      {{- with .Content }}
-      <details class="org" id="history" data-pane="history">
-        <summary><h2>{{ $.Params.historyTitle | default "Where it came from" }}</h2></summary>
-        {{ . }}
-      </details>
-      {{- end }}
 
       <details class="org" id="get-started" open data-pane="start">
         <summary><h2>{{ .Params.startTitle | default "Getting started" }}</h2></summary>
@@ -86,6 +80,13 @@
         </ol>
         {{ with .Params.stepsNote }}<p>{{ . | markdownify }}</p>{{ end }}
       </details>
+
+      {{- with .Content }}
+      <details class="org" id="history" data-pane="history">
+        <summary><h2>{{ $.Params.historyTitle | default "History" }}</h2></summary>
+        {{ . }}
+      </details>
+      {{- end }}
 
       {{- with hugo.Data.faq }}
       <details class="org" id="faq" data-pane="faq">
